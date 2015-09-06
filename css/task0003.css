@@ -27,14 +27,18 @@ header p {
 }
 
 .main {
-	position: fixed;
+	position: absolute;
 	top: 60px;
+	right: 0;
 	bottom: 0;
+	left: 0;
 	width: 100%;
-	height: 100%;
+	overflow: hidden;
 }
 
-.sec-left, .sec-middle {
+.sec-left, 
+.sec-middle {
+	position: relative;
 	float: left;
 	width: 229px;
 	height: 100%;
@@ -42,8 +46,9 @@ header p {
 	border-right: 1px solid #ccc;
 }
 
-.sec-left .new, .sec-middle .new {
-	position: fixed;
+.sec-left .new, 
+.sec-middle .new {
+	position: absolute;
 	bottom: 0;
 	left: 0;
 	width: 229px;
@@ -55,15 +60,12 @@ header p {
 	background: #eee;
 }
 
-.sec-left .new img, .sec-middle .new img {
+.sec-left .new img, 
+.sec-middle .new img {
 	width: 12px;
 	height: 12px;
 	position: relative;
 	top: 2px;
-}
-
-.sec-middle .new {
-	left: 230px;
 }
 
 .sec-middle .filter {
@@ -104,7 +106,8 @@ header p {
 	min-height: 540px;
 }
 
-.sec-right .title, .sec-right .date {
+.sec-right .title, 
+.sec-right .date {
 	height: 52px;
 	border-bottom: 1px solid #ccc;
 }
@@ -117,7 +120,8 @@ header p {
 	background: #fafaee;
 }
 
-.sec-right .title, .sec-right .date span {
+.sec-right .title, 
+.sec-right .date span {
 	line-height: 52px;
 	padding-left: 15px;
 }
