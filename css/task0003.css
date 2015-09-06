@@ -3,28 +3,40 @@
 	padding: 0;
 }
 
+body {
+	min-width: 800px;
+	min-height: 600px;
+	overflow: auto;
+}
+
 header {
+	position: fixed;
+	top: 0;
 	width: 100%;
-	height: 60px;
+	height: 59px;
 	background: #ddd;
+	border-bottom: 1px solid #ccc;
 }
 
 header p {
 	font-size: 20px;
 	color: #999;
 	height: 100%;
-	line-height: 60px;
+	line-height: 59px;
 	margin-left: 10px;
 }
 
 .main {
 	position: fixed;
+	top: 60px;
+	bottom: 0;
+	width: 100%;
 	height: 100%;
 }
 
 .sec-left, .sec-middle {
 	float: left;
-	width: 230px;
+	width: 229px;
 	height: 100%;
 	background: #f2f2f2;
 	border-right: 1px solid #ccc;
@@ -34,14 +46,102 @@ header p {
 	position: fixed;
 	bottom: 0;
 	left: 0;
-	width: 230px;
+	width: 229px;
 	height: 40px;
 	line-height: 40px;
 	border-top: 1px solid #ccc;
 	font-size: 12px;
 	text-align: center;
+	background: #eee;
+}
+
+.sec-left .new img, .sec-middle .new img {
+	width: 12px;
+	height: 12px;
+	position: relative;
+	top: 2px;
 }
 
 .sec-middle .new {
 	left: 230px;
+}
+
+.sec-middle .filter {
+	height: 40px;
+	background: #eee;
+	border-bottom: 1px solid #ccc;
+}
+
+.sec-middle .filter {
+	font-size: 12px;
+	line-height: 40px;
+	padding-left: 10px;
+	overflow: hidden;
+	*zoom: 1;
+}
+
+.sec-middle .filter li {
+	list-style-type: none;
+	float: left;
+	margin-right: 10px;
+}
+
+.sec-middle .todos {
+    position: absolute;
+    height: 100%;
+    top: 41px;
+    width: 229px;
+    background: #fff;
+}
+
+.sec-right {
+	float: left;
+	position: absolute;
+	left: 460px;
+	right: 0;
+	height: 100%;
+	min-width: 340px;
+	min-height: 540px;
+}
+
+.sec-right .title, .sec-right .date {
+	height: 52px;
+	border-bottom: 1px solid #ccc;
+}
+
+.sec-right .title {
+	background: #f2f2f2;
+}
+
+.sec-right .date {
+	background: #fafaee;
+}
+
+.sec-right .title, .sec-right .date span {
+	line-height: 52px;
+	padding-left: 15px;
+}
+
+.sec-right .title{
+	font-size: 18px;
+}
+
+.sec-right .title img {
+	position: absolute;
+	top: 17px;
+	right: 60px;
+	width: 22px;
+	height: 18px;
+}
+
+.sec-right .title img+img{
+	right: 20px;
+}
+
+.sec-right .date span {
+	font-size: 14px;
+}
+
+.sec-right .content {
+	padding: 15px;
 }
