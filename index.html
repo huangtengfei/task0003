@@ -11,7 +11,33 @@
 	</header>
 	<div class="main">
 		<section class="sec-left">
-			<div class="categories"></div>
+			<div class="categories">
+				<ul class="first-level">
+					<li>所有任务</li>
+					<li>分类列表
+						<ul class="second-level">
+							<li>
+								<img src="image/folder.png" alt="folder">
+								<span>IFE项目 (10)</span>
+								<ul class="third-level">
+									<li class="selected">
+										<img src="image/file.png" alt="folder">
+										<span>task0001 (6)</span>
+									</li>
+									<li>
+										<img src="image/file.png" alt="folder">
+										<span>task0002 (2)</span>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<img src="image/folder.png" alt="folder">
+								<span>默认分类 (0)</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
 			<div class="new">
 				<img src="image/add.png" alt="add">
 				<span>新增分类</span>
@@ -19,11 +45,35 @@
 		</section>
 		<section class="sec-middle">
 			<ul class="filter">
-				<li>所有</li>
+				<li class="selected">所有</li>
 				<li>未完成</li>
 				<li>已完成</li>
 			</ul>
-			<div class="todos"></div>
+			<div class="todos">
+				<ul class="first-level">
+					<li>
+						<span>2015-09-07</span>
+						<ul class="second-level">
+							<li>to-do 1</li>
+							<li>to-do 2</li>
+						</ul>
+					</li>
+					<li>
+						<span>2015-08-07</span>
+						<ul class="second-level">
+							<li>to-do 3</li>
+							<li>to-do 4</li>
+						</ul>
+					</li>
+					<li>
+						<span>2015-07-07</span>
+						<ul class="second-level">
+							<li>to-do 5</li>
+							<li>to-do 6</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
 			<div class="new">
 				<img src="image/add.png" alt="add">
 				<span>新增任务</span>

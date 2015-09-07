@@ -9,6 +9,10 @@ body {
 	overflow: auto;
 }
 
+li {
+	list-style-type: none;
+}
+
 header {
 	position: fixed;
 	top: 0;
@@ -27,18 +31,14 @@ header p {
 }
 
 .main {
-	position: absolute;
+	position: fixed;
 	top: 60px;
-	right: 0;
 	bottom: 0;
-	left: 0;
 	width: 100%;
-	overflow: hidden;
+	height: 100%;
 }
 
-.sec-left, 
-.sec-middle {
-	position: relative;
+.sec-left, .sec-middle {
 	float: left;
 	width: 229px;
 	height: 100%;
@@ -46,9 +46,46 @@ header p {
 	border-right: 1px solid #ccc;
 }
 
-.sec-left .new, 
-.sec-middle .new {
-	position: absolute;
+.categories {
+	padding-top: 15px;
+}
+
+.categories .selected {
+	background-color: #fff;
+}
+
+.categories .first-level > li {
+	text-indent: 1em;
+	line-height: 35px;
+	font-size: 15px;
+}
+
+.categories .second-level > li {
+	text-indent: 2em;
+	line-height: 30px;
+	font-size: 14px;
+}
+
+.categories .second-level > li > img{
+	width: 15px;
+	height: 11px;
+}
+
+.categories .third-level > li {
+	text-indent: 4em;
+	line-height: 25px;
+	font-size: 13px;
+}
+
+.categories .third-level > li > img {
+	position: relative;
+	top: 2px;
+	width: 10px;
+	height: 12px;
+}
+
+.sec-left .new, .sec-middle .new {
+	position: fixed;
 	bottom: 0;
 	left: 0;
 	width: 229px;
@@ -60,32 +97,39 @@ header p {
 	background: #eee;
 }
 
-.sec-left .new img, 
-.sec-middle .new img {
+.sec-left .new img, .sec-middle .new img {
 	width: 12px;
 	height: 12px;
 	position: relative;
 	top: 2px;
 }
 
-.sec-middle .filter {
-	height: 40px;
-	background: #eee;
-	border-bottom: 1px solid #ccc;
+.sec-middle .new {
+	left: 230px;
 }
 
 .sec-middle .filter {
 	font-size: 12px;
-	line-height: 40px;
-	padding-left: 10px;
+	line-height: 20px;
+	height: 20px;
+	padding: 10px;	
+	background: #eee;
+	border-bottom: 1px solid #ccc;
 	overflow: hidden;
 	*zoom: 1;
 }
 
 .sec-middle .filter li {
-	list-style-type: none;
 	float: left;
 	margin-right: 10px;
+}
+
+.sec-middle .filter .selected {
+	position: relative;
+	top: -2px;
+	padding: 1px 10px;
+	border: 1px solid #ccc;
+	background-color: #fff;
 }
 
 .sec-middle .todos {
@@ -94,6 +138,20 @@ header p {
     top: 41px;
     width: 229px;
     background: #fff;
+}
+
+.todos .first-level > li {
+	font-size: 15px;
+	text-indent: 1em;
+	line-height: 35px;
+	background-color: #fafaee;
+}
+
+.todos .second-level > li {
+	font-size: 14px;
+	text-indent: 2em;
+	line-height: 30px;
+	background-color: #fff;
 }
 
 .sec-right {
@@ -106,8 +164,7 @@ header p {
 	min-height: 540px;
 }
 
-.sec-right .title, 
-.sec-right .date {
+.sec-right .title, .sec-right .date {
 	height: 52px;
 	border-bottom: 1px solid #ccc;
 }
@@ -120,8 +177,7 @@ header p {
 	background: #fafaee;
 }
 
-.sec-right .title, 
-.sec-right .date span {
+.sec-right .title, .sec-right .date span {
 	line-height: 52px;
 	padding-left: 15px;
 }
