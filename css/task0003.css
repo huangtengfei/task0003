@@ -54,6 +54,10 @@ header p {
 	background-color: #fff;
 }
 
+.categories li {
+	cursor: pointer;
+}
+
 .categories .first-level > li {
 	text-indent: 1em;
 	line-height: 35px;
