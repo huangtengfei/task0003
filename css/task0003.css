@@ -71,6 +71,10 @@ header p {
 	height: 11px;
 }
 
+.categories .second-level span {
+	margin-left: 8px;
+}
+
 .categories .third-level > li {
 	text-indent: 4em;
 	line-height: 25px;
@@ -95,6 +99,7 @@ header p {
 	font-size: 12px;
 	text-align: center;
 	background: #eee;
+	cursor: pointer;
 }
 
 .sec-left .new img, .sec-middle .new img {
