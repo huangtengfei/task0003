@@ -64,6 +64,23 @@ header p {
 	font-size: 15px;
 }
 
+.categories .all-task > li {
+	text-indent: 2em;
+	line-height: 30px;
+	font-size: 14px;
+}
+
+.categories .all-task span {
+	margin-left: 8px;
+}
+
+.categories .all-task > li > img {
+	position: relative;
+	top: 2px;
+	width: 10px;
+	height: 12px;
+}
+
 .categories .second-level > li {
 	text-indent: 2em;
 	line-height: 30px;
@@ -130,13 +147,14 @@ header p {
 
 .sec-middle .filter li {
 	float: left;
-	margin-right: 10px;
+	margin-right: 12px;
+	cursor: pointer;
 }
 
 .sec-middle .filter .selected {
 	position: relative;
 	top: -2px;
-	padding: 1px 10px;
+	padding: 1px 5px;
 	border: 1px solid #ccc;
 	background-color: #fff;
 }

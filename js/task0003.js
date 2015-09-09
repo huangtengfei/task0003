@@ -1,14 +1,43 @@
 'use strict'
 
-var newCate = $('#newCate');
-var firLevel = $('.first-level');
-var secLevel = $('.second-level');
-var currCate = $('.third-level li');
+var newCate = $('#newCate'),
+	filter = $('.filter'),
+	firLevel = $('.first-level'),
+	secLevel = $('.second-level'),
+	firItems = document.getElementsByClassName('fir-item');
+
+var currCate;
+
+// 初始化分类列表
+(function init(){
+
+	each(data, function(item1, index1){
+		currCate = firLevel.getElementsByClassName('fir-item')[0];
+		each(item1.childs, function(item2, index2){
+			createCate(item2.name, true);
+		})
+	})
+
+	each(data, function(item1, index1){
+		currCate = firLevel.getElementsByClassName('fir-item')[1];
+		createCate(item1.name);
+		each(item1.childs, function(item2, index2){
+			currCate = secLevel.getElementsByClassName('sec-item')[index1];
+			createCate(item2.name, true);
+		})
+	})
+
+})();
 
 // 点击 新增分类 按钮时的处理
 addEvent(newCate, 'click', function(){
 
-	if(currCate.parentElement.className == 'third-level'){	
+	if(!currCate) {
+		return;
+	}
+
+	var className = trim(currCate.parentElement.className);
+	if(className == 'third-level' || className == 'all-task'){	
 		return;
 	}else{
 		var cateName = window.prompt('请输入分类名称');
@@ -47,20 +76,44 @@ addEvent(firLevel, 'click', function(){
 		}
 	}
 
-	if(currCate.parentElement.className != 'third-level'){
+	var className = trim(currCate.parentElement.className);
+	if(className == 'third-level' || className == 'all-task'){
+		newCate.style.cursor = 'not-allowed';
+	}else{
 		if(ul){
 			ul.style.background = '#f2f2f2';
-		}
-	}else{
-		newCate.style.cursor = 'not-allowed';
+		}		
 	}
 
 	addClass(currCate, 'selected');		// 为当前选中的分类添加样式
 
 })
 
+// 双击展开或隐藏最顶层分类
+each(firItems, function(item){
+	addEvent(item, 'dblclick', function(){
+		var ul = item.getElementsByTagName('ul')[0];
+		if(ul.style.display == 'none'){
+			ul.style.display = 'block';
+		}else {
+			ul.style.display = 'none';
+		}
+	})
+})
+
+addEvent(filter, 'click', function(){
+	var evt = arguments[0] || window.event,
+		target = evt.srcElement || evt.target;
+
+	var lis = filter.getElementsByTagName('li');
+	each(lis, function(item){
+		removeClass(item, 'selected');
+	})	
+	addClass(target, 'selected');
+})
+
 // 创建一个分类，参数：分类名称
-function createCate(cateName){
+function createCate(cateName, isSecondLevel){
 
 	var ul = currCate.getElementsByTagName('ul')[0];
 
@@ -68,15 +121,21 @@ function createCate(cateName){
 	 	img = document.createElement('img'),
 	 	span = document.createElement('span');
 
-	if(currCate.parentElement.className == 'second-level'){		
+	span.innerHTML = cateName;
+	li.appendChild(img);
+	li.appendChild(span);
+
+	if(isSecondLevel || currCate.parentElement.className == 'second-level'){		
 		img.setAttribute('src', 'image/file.png');
 	}else {
 		img.setAttribute('src', 'image/folder-open.png');
+		var childUl = document.createElement('ul');
+		addClass(childUl, 'third-level');
+		li.appendChild(childUl);
+		addClass(li, 'sec-item');
 	}
-	span.innerHTML = cateName;
 	
-	li.appendChild(img);
-	li.appendChild(span);
 	ul.appendChild(li);
 }
+
 
