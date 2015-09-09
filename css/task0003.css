@@ -179,6 +179,11 @@ header p {
 	text-indent: 2em;
 	line-height: 30px;
 	background-color: #fff;
+	cursor: pointer;
+}
+
+.todos .second-level .selected {
+	background: #f2f2f2;
 }
 
 .sec-right {
