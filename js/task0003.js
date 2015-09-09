@@ -223,6 +223,7 @@ function initTodos(guid) {
 
 }
 
+// 创建一条todo
 function createTodo(innerUl, name, guid){
 	var innerLi = document.createElement('li');
 	innerLi.innerHTML = name;
@@ -246,26 +247,28 @@ function getContent(){
 	})
 	addClass(target, 'selected');	
 
-	createContent(target.getAttribute('guid'));
+	createContent(target.getAttribute('guid'), target.textContent);
 }
 
 // 获取某一todo的内容并更新页面
-function createContent(guid){
+function createContent(guid, name){
 	each(contentData, function(item){
-		if(guid && item.guid == guid){
-			todoTitle.innerHTML = item.name;
-			todoDate.innerHTML = item.date;
-			todoContent.innerHTML = item.content;
+		if(guid){
+			if(item.guid == guid){
+				todoTitle.innerHTML = item.name;
+				todoDate.innerHTML = item.date;
+				todoContent.innerHTML = item.content;
+			}
+		}else{
+			todoTitle.innerHTML = name;
+			todoDate.innerHTML = getToday();
+			todoContent.innerHTML = '';
 		}
 	})
 }
 
 // 获取格式化的当天日期
 function getToday(){
-	// var arr = date.split('-');
-	// var today = new Date();
-	// return (today.getFullYear == arr[0]) && ((today.getMonth() + 1) == arr[1]) && 
-	// 	(today.getDate() == arr[2]);
 
 	var arr = [];
 	var today = new Date();
