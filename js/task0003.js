@@ -1,6 +1,7 @@
 'use strict'
 
 var newCate = $('#newCate'),
+	newTodo = $('#newTodo'),
 	filter = $('.filter'),
 	firLevel = $('.first-level'),
 	secLevel = $('.second-level'),
@@ -33,7 +34,7 @@ var currCate;
 	})
 
 	// 默认选中第一个小分类
-	createTodos('cate0001');
+	initTodos('cate0001');
 	var curr = $('.third-level li');
 	addClass(curr, 'selected');
 
@@ -93,7 +94,7 @@ addEvent(firLevel, 'click', function(){
 	var className = trim(currCate.parentElement.className);
 	if(className == 'third-level' || className == 'all-task'){
 		newCate.style.cursor = 'not-allowed';
-		createTodos(currCate.getAttribute('guid'));
+		initTodos(currCate.getAttribute('guid'));
 	}else{
 		if(ul){
 			ul.style.background = '#f2f2f2';
@@ -128,6 +129,35 @@ addEvent(filter, 'click', function(){
 	addClass(target, 'selected');
 })
 
+addEvent(newTodo, 'click', function(){
+
+	var todoName = window.prompt('请输入待办事项名称');
+	if(!todoName) {
+		return;
+	}
+
+	var firstLi = $('.todos li');
+	var firstTodo = $('.todos span').innerHTML;
+
+	if(firstTodo == getToday()){
+		var ul = $('.todos .second-level');
+		createTodo(ul, todoName);
+	}else{
+		var outUl = $('.todos .first-level');
+		var li = document.createElement('li');
+		var span = document.createElement('span');
+		span.innerHTML = getToday();
+		var innerUl = document.createElement('ul');
+		addClass(innerUl, 'second-level');
+		li.appendChild(span);
+		li.appendChild(innerUl);
+		outUl.insertBefore(li, firstLi);
+		createTodo(innerUl, todoName);
+
+	}
+	
+})
+
 // 创建一个分类，参数：分类名称
 function createCate(cateName, cateId){
 
@@ -157,7 +187,7 @@ function createCate(cateName, cateId){
 }
 
 // 创建待办任务
-function createTodos(guid) {
+function initTodos(guid) {
 	var datas = [];
 	var ul = $('.todos .first-level');
 	todoDiv.removeChild(ul);
@@ -180,11 +210,7 @@ function createTodos(guid) {
 		var innerUl = document.createElement('ul');
 		addClass(innerUl, 'second-level');
 		each(item1.todos, function(item2){
-			var innerLi = document.createElement('li');
-			innerLi.setAttribute('guid', item2.guid);
-			innerLi.setAttribute('onclick', 'getContent()');
-			innerLi.innerHTML = item2.name;
-			innerUl.appendChild(innerLi);
+			createTodo(innerUl, item2.name, item2.guid);
 		})
 
 		outerLi.appendChild(span);
@@ -195,6 +221,18 @@ function createTodos(guid) {
 
 	todoDiv.appendChild(outUl);
 
+}
+
+function createTodo(innerUl, name, guid){
+	var innerLi = document.createElement('li');
+	innerLi.innerHTML = name;
+	if(guid){
+		innerLi.setAttribute('guid', guid);
+	}else{
+		// TBD 生成guid
+	}
+	innerLi.setAttribute('onclick', 'getContent()');
+	innerUl.appendChild(innerLi);
 }
 
 // 绑定给todo列表的事件函数
@@ -214,7 +252,7 @@ function getContent(){
 // 获取某一todo的内容并更新页面
 function createContent(guid){
 	each(contentData, function(item){
-		if(item.guid == guid){
+		if(guid && item.guid == guid){
 			todoTitle.innerHTML = item.name;
 			todoDate.innerHTML = item.date;
 			todoContent.innerHTML = item.content;
@@ -222,4 +260,23 @@ function createContent(guid){
 	})
 }
 
+// 获取格式化的当天日期
+function getToday(){
+	// var arr = date.split('-');
+	// var today = new Date();
+	// return (today.getFullYear == arr[0]) && ((today.getMonth() + 1) == arr[1]) && 
+	// 	(today.getDate() == arr[2]);
+
+	var arr = [];
+	var today = new Date();
+	var month = today.getMonth() + 1;
+	month = month < 10 ? '0' + month : month;
+	var date = today.getDate();
+	date = date < 10 ? '0' + date : date;
+	arr.push(today.getFullYear());
+	arr.push(month);
+	arr.push(date);
+	return arr.join('-');
+
+}
 
