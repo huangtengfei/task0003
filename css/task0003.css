@@ -186,35 +186,44 @@ header p {
 	background: #f2f2f2;
 }
 
-.sec-right {
+.sec-right, 
+.sec-right-edit {
 	float: left;
 	position: absolute;
 	left: 460px;
 	right: 0;
 	height: 100%;
+	overflow-y: auto;
 	min-width: 340px;
 	min-height: 540px;
 }
 
-.sec-right .title, .sec-right .date {
+.sec-right .title, 
+.sec-right-edit .title,
+.sec-right .date,
+.sec-right-edit .date {
 	height: 52px;
 	border-bottom: 1px solid #ccc;
 }
 
-.sec-right .title {
+.sec-right .title, 
+.sec-right-edit .title {
 	background: #f2f2f2;
 }
 
-.sec-right .date {
+.sec-right .date,
+.sec-right-edit .date {
 	background: #fafaee;
 }
 
-.sec-right .title, .sec-right .date span {
+.sec-right .title, 
+.sec-right .date span {
 	line-height: 52px;
 	padding-left: 15px;
 }
 
-.sec-right .title{
+.sec-right .title, 
+.sec-right-edit .title {
 	font-size: 18px;
 }
 
@@ -224,9 +233,11 @@ header p {
 	right: 60px;
 	width: 22px;
 	height: 18px;
+	cursor: pointer;
 }
 
-.sec-right .title img+img{
+.sec-right .title img+img, 
+.sec-right-edit .title img+img{
 	right: 20px;
 }
 
@@ -235,5 +246,52 @@ header p {
 }
 
 .sec-right .content {
+	position: absolute;
+	top: 106px;
+	right: 0;
+	bottom: 0;
+	left: 0;
 	padding: 15px;
+}
+
+.sec-right .content>p {
+	margin-bottom: 100px;
+}
+
+.sec-right-edit {
+	display: none;
+}
+
+.sec-right-edit .title>input,
+.sec-right-edit .date>input {
+	width: 60%;
+	height: 52px;
+	border: none;
+	padding-left: 10px;
+	background-color: #f2f2f2;
+}
+
+.sec-right-edit .date>input {
+	background-color: #fafaee;
+}
+
+
+.sec-right-edit .title>input:focus, 
+.sec-right-edit .date>input:focus {
+	outline: none;
+}
+
+.sec-right-edit .content>textarea {
+	position: absolute;
+	top: 106px;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 98%;
+	margin: 20px 10px 80px;
+	border: none;
+}
+
+.sec-right-edit .content>textarea:focus {
+	outline: none;
 }

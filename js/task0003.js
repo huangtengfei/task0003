@@ -2,17 +2,18 @@
 
 var newCate = $('#newCate'),
 	newTodo = $('#newTodo'),
+	editBtn = $('#editBtn'),
+	chkBtn = $('#checkBtn'),
 	filter = $('.filter'),
 	firLevel = $('.first-level'),
 	secLevel = $('.second-level'),
 	firItems = document.getElementsByClassName('fir-item'),
 	todoDiv = $('.todos'),
-	todoTitle = $('.sec-right .title h4'),
-	todoDate = $('.sec-right .date span'),
-	todoContent = $('.sec-right .content p');
+	secRight = $('.sec-right'),
+	secRightEdit = $('.sec-right-edit');
+	
 
-
-var currCate;
+var currCate, currTodo;
 
 // 初始化分类列表
 (function init(){
@@ -40,7 +41,8 @@ var currCate;
 
 	var li = $('.todos .second-level li');
 	addClass(li, 'selected');
-	createContent('todo0001');
+	currTodo = 'todo0001';
+	createContent(currTodo);
 
 })();
 
@@ -129,35 +131,6 @@ addEvent(filter, 'click', function(){
 	addClass(target, 'selected');
 })
 
-addEvent(newTodo, 'click', function(){
-
-	var todoName = window.prompt('请输入待办事项名称');
-	if(!todoName) {
-		return;
-	}
-
-	var firstLi = $('.todos li');
-	var firstTodo = $('.todos span').innerHTML;
-
-	if(firstTodo == getToday()){
-		var ul = $('.todos .second-level');
-		createTodo(ul, todoName);
-	}else{
-		var outUl = $('.todos .first-level');
-		var li = document.createElement('li');
-		var span = document.createElement('span');
-		span.innerHTML = getToday();
-		var innerUl = document.createElement('ul');
-		addClass(innerUl, 'second-level');
-		li.appendChild(span);
-		li.appendChild(innerUl);
-		outUl.insertBefore(li, firstLi);
-		createTodo(innerUl, todoName);
-
-	}
-	
-})
-
 // 创建一个分类，参数：分类名称
 function createCate(cateName, cateId){
 
@@ -186,7 +159,7 @@ function createCate(cateName, cateId){
 	
 }
 
-// 创建待办任务
+// 初始化待办任务
 function initTodos(guid) {
 	var datas = [];
 	var ul = $('.todos .first-level');
@@ -223,6 +196,38 @@ function initTodos(guid) {
 
 }
 
+// 新建任务的点击事件
+addEvent(newTodo, 'click', function(){
+
+	secRight.style.display = 'block';
+	secRightEdit.style.display = 'none';
+
+	var todoName = window.prompt('请输入待办事项名称');
+	if(!todoName) {
+		return;
+	}
+
+	var firstLi = $('.todos li');
+	var firstTodo = $('.todos span').innerHTML;
+
+	if(firstTodo == getToday()){
+		var ul = $('.todos .second-level');
+		createTodo(ul, todoName);
+	}else{
+		var outUl = $('.todos .first-level');
+		var li = document.createElement('li');
+		var span = document.createElement('span');
+		span.innerHTML = getToday();
+		var innerUl = document.createElement('ul');
+		addClass(innerUl, 'second-level');
+		li.appendChild(span);
+		li.appendChild(innerUl);
+		outUl.insertBefore(li, firstLi);
+		createTodo(innerUl, todoName);
+	}
+	
+})
+
 // 创建一条todo
 function createTodo(innerUl, name, guid){
 	var innerLi = document.createElement('li');
@@ -231,27 +236,53 @@ function createTodo(innerUl, name, guid){
 		innerLi.setAttribute('guid', guid);
 	}else{
 		// TBD 生成guid
+		secRight.style.display = 'none';
+		secRightEdit.style.display = 'block';
+		var todoTitle = $('.sec-right-edit .title input'),
+			todoDate = $('.sec-right-edit .date input'),
+			todoContent = $('.sec-right-edit .content textarea');
+
+		todoTitle.value = name;
+		todoDate.value = getToday();
+		todoContent.value = '';
+		todoContent.focus();
+
+		updateSelected(innerLi);	// 将新创建的条目样式设置为选中
 	}
 	innerLi.setAttribute('onclick', 'getContent()');
 	innerUl.appendChild(innerLi);
 }
 
-// 绑定给todo列表的事件函数
-function getContent(){
-	var evt = arguments[0] || window.event,
-		target = evt.srcElement || evt.target;
-
+// 设置某todo为选中项
+function updateSelected(target) {
 	var lis = todoDiv.getElementsByTagName('li');
 	each(lis, function(item){
 		removeClass(item, 'selected');
 	})
 	addClass(target, 'selected');	
+}
 
-	createContent(target.getAttribute('guid'), target.textContent);
+// 绑定给todo列表的事件函数
+function getContent(){
+
+	secRight.style.display = 'block';
+	secRightEdit.style.display = 'none';
+
+	var evt = arguments[0] || window.event,
+		target = evt.srcElement || evt.target;
+
+	updateSelected(target);
+	
+	currTodo = target.getAttribute('guid');
+	createContent(currTodo, target.textContent);
 }
 
 // 获取某一todo的内容并更新页面
 function createContent(guid, name){
+	var todoTitle = $('.sec-right .title h4'),
+		todoDate = $('.sec-right .date span'),
+		todoContent = $('.sec-right .content p');
+
 	each(contentData, function(item){
 		if(guid){
 			if(item.guid == guid){
@@ -283,3 +314,23 @@ function getToday(){
 
 }
 
+// 编辑按钮的点击事件
+addEvent(editBtn, 'click', function(){
+	secRight.style.display = 'none';
+	secRightEdit.style.display = 'block';
+
+	if(currTodo){
+		var todoTitle = $('.sec-right-edit .title input'),
+			todoDate = $('.sec-right-edit .date input'),
+			todoContent = $('.sec-right-edit .content textarea');
+
+		each(contentData, function(item){
+			if(item.guid == currTodo){
+				todoTitle.value = item.name;
+				todoDate.value = item.date;
+				todoContent.value = item.content;
+			}
+		})
+	}
+
+})
