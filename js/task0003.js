@@ -13,19 +13,28 @@ var newCate = $('#newCate'),
 	secRightEdit = $('.sec-right-edit');
 	
 
-var currCate, currTodo;
+var currCate, currTodo, tmpCateData;
+
+tmpCateData = [];
+
+if(localStorage.cateData) {
+	tmpCateData = JSON.parse(localStorage.cateData);
+}else{
+	tmpCateData = data;
+	localStorage.cateData = JSON.stringify(data);
+}
 
 // 初始化分类列表
 (function init(){
 
-	each(data, function(item1, index1){
+	each(tmpCateData, function(item1, index1){
 		currCate = firLevel.getElementsByClassName('fir-item')[0];
 		each(item1.childs, function(item2, index2){
 			createCate(item2.name, item2.guid);
 		})
 	})
 
-	each(data, function(item1, index1){
+	each(tmpCateData, function(item1, index1){
 		currCate = firLevel.getElementsByClassName('fir-item')[1];
 		createCate(item1.name);
 		each(item1.childs, function(item2, index2){
@@ -65,6 +74,52 @@ addEvent(newCate, 'click', function(){
 	}
 
 })
+
+// 创建一个分类，参数：分类名称
+function createCate(cateName, cateId){
+
+	var ul = currCate.getElementsByTagName('ul')[0];
+
+	var li = document.createElement('li'),
+	 	img = document.createElement('img'),
+	 	span = document.createElement('span');
+
+	span.innerHTML = cateName;
+	li.appendChild(img);
+	li.appendChild(span);
+
+	if(cateId || currCate.parentElement.className == 'second-level'){
+		li.setAttribute('guid', cateId);		
+		img.setAttribute('src', 'image/file.png');
+	}else {
+		img.setAttribute('src', 'image/folder-open.png');
+		var childUl = document.createElement('ul');
+		addClass(childUl, 'third-level');
+		li.appendChild(childUl);
+		addClass(li, 'sec-item');
+
+		addCate(cateName);	// 对接存储接口
+	}
+
+	ul.appendChild(li);
+	
+}
+
+function addCate(cateName) {
+	var hasSame = false;
+	each(tmpCateData, function(item, index){
+		if(item.name == cateName){
+			hasSame = true;
+		}
+	})	
+	if(!hasSame){
+		tmpCateData.push({
+			name: cateName,
+			childs: []
+		})
+		localStorage.cateData = JSON.stringify(tmpCateData);
+	}	
+}
 
 // 为分类列表下每个条目添加click事件
 addEvent(firLevel, 'click', function(){
@@ -130,34 +185,6 @@ addEvent(filter, 'click', function(){
 	})	
 	addClass(target, 'selected');
 })
-
-// 创建一个分类，参数：分类名称
-function createCate(cateName, cateId){
-
-	var ul = currCate.getElementsByTagName('ul')[0];
-
-	var li = document.createElement('li'),
-	 	img = document.createElement('img'),
-	 	span = document.createElement('span');
-
-	span.innerHTML = cateName;
-	li.appendChild(img);
-	li.appendChild(span);
-
-	if(cateId || currCate.parentElement.className == 'second-level'){
-		li.setAttribute('guid', cateId);		
-		img.setAttribute('src', 'image/file.png');
-	}else {
-		img.setAttribute('src', 'image/folder-open.png');
-		var childUl = document.createElement('ul');
-		addClass(childUl, 'third-level');
-		li.appendChild(childUl);
-		addClass(li, 'sec-item');
-	}
-
-	ul.appendChild(li);
-	
-}
 
 // 初始化待办任务
 function initTodos(guid) {
