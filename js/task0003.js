@@ -12,29 +12,33 @@ var newCate = $('#newCate'),
 	secRight = $('.sec-right'),
 	secRightEdit = $('.sec-right-edit');
 	
+var currCate, 
+	currTodo, 
+	cateData = [];
 
-var currCate, currTodo, tmpCateData;
-
-tmpCateData = [];
-
-if(localStorage.cateData) {
-	tmpCateData = JSON.parse(localStorage.cateData);
-}else{
-	tmpCateData = data;
-	localStorage.cateData = JSON.stringify(data);
-}
+// ----------------------------初始化----------------------------
 
 // 初始化分类列表
 (function init(){
 
-	each(tmpCateData, function(item1, index1){
+	// 从 localStorage 读取初始化数据
+	if(localStorage.cateData) {
+		cateData = JSON.parse(localStorage.cateData);
+	}else{
+		cateData = data;
+		localStorage.cateData = JSON.stringify(data);
+	}
+
+	// 初始化所有任务
+	each(cateData, function(item1, index1){
 		currCate = firLevel.getElementsByClassName('fir-item')[0];
 		each(item1.childs, function(item2, index2){
 			createCate(item2.name, item2.guid);
 		})
 	})
 
-	each(tmpCateData, function(item1, index1){
+	// 初始化分类列表
+	each(cateData, function(item1, index1){
 		currCate = firLevel.getElementsByClassName('fir-item')[1];
 		createCate(item1.name);
 		each(item1.childs, function(item2, index2){
@@ -55,71 +59,7 @@ if(localStorage.cateData) {
 
 })();
 
-// 点击 新增分类 按钮时的处理
-addEvent(newCate, 'click', function(){
-
-	if(!currCate) {
-		return;
-	}
-
-	var className = trim(currCate.parentElement.className);
-	if(className == 'third-level' || className == 'all-task'){	
-		return;
-	}else{
-		var cateName = window.prompt('请输入分类名称');
-		if(!cateName) {
-			return;
-		}
-		createCate(cateName);
-	}
-
-})
-
-// 创建一个分类，参数：分类名称
-function createCate(cateName, cateId){
-
-	var ul = currCate.getElementsByTagName('ul')[0];
-
-	var li = document.createElement('li'),
-	 	img = document.createElement('img'),
-	 	span = document.createElement('span');
-
-	span.innerHTML = cateName;
-	li.appendChild(img);
-	li.appendChild(span);
-
-	if(cateId || currCate.parentElement.className == 'second-level'){
-		li.setAttribute('guid', cateId);		
-		img.setAttribute('src', 'image/file.png');
-	}else {
-		img.setAttribute('src', 'image/folder-open.png');
-		var childUl = document.createElement('ul');
-		addClass(childUl, 'third-level');
-		li.appendChild(childUl);
-		addClass(li, 'sec-item');
-
-		addCate(cateName);	// 对接存储接口
-	}
-
-	ul.appendChild(li);
-	
-}
-
-function addCate(cateName) {
-	var hasSame = false;
-	each(tmpCateData, function(item, index){
-		if(item.name == cateName){
-			hasSame = true;
-		}
-	})	
-	if(!hasSame){
-		tmpCateData.push({
-			name: cateName,
-			childs: []
-		})
-		localStorage.cateData = JSON.stringify(tmpCateData);
-	}	
-}
+// ----------------------------分类列表----------------------------
 
 // 为分类列表下每个条目添加click事件
 addEvent(firLevel, 'click', function(){
@@ -127,6 +67,8 @@ addEvent(firLevel, 'click', function(){
 	var evt = arguments[0] || window.event,
 		target = evt.srcElement || evt.target,
 		cates = firLevel.getElementsByTagName('li');
+
+	var parentCateClass = trim(currCate.parentElement.className);
 
 	each(cates, function(item){		// 取消原先选中分类上的样式
 		removeClass(item, 'selected');
@@ -137,7 +79,7 @@ addEvent(firLevel, 'click', function(){
 	var ul = currCate.getElementsByTagName('ul')[0];
 
 	if(target.tagName == 'IMG') {
-		if(currCate.parentElement.className != 'third-level'){
+		if(parentCateClass != 'third-level'){
 			if(ul.style.display == 'none'){
 				ul.style.display = 'block';
 				target.setAttribute('src', 'image/folder-open.png');
@@ -148,8 +90,7 @@ addEvent(firLevel, 'click', function(){
 		}
 	}
 
-	var className = trim(currCate.parentElement.className);
-	if(className == 'third-level' || className == 'all-task'){
+	if(parentCateClass == 'third-level' || parentCateClass == 'all-task'){
 		newCate.style.cursor = 'not-allowed';
 		initTodos(currCate.getAttribute('guid'));
 	}else{
@@ -174,17 +115,99 @@ each(firItems, function(item){
 	})
 })
 
-// 为待办任务的筛选条件添加点击事件
-addEvent(filter, 'click', function(){
-	var evt = arguments[0] || window.event,
-		target = evt.srcElement || evt.target;
+// 点击 新增分类 按钮时的处理
+addEvent(newCate, 'click', function(){
 
-	var lis = filter.getElementsByTagName('li');
-	each(lis, function(item){
-		removeClass(item, 'selected');
-	})	
-	addClass(target, 'selected');
+	if(!currCate) {
+		return;
+	}
+
+	var parentCateClass = trim(currCate.parentElement.className);
+
+	if(parentCateClass == 'third-level' || parentCateClass == 'all-task'){	
+		return;
+	}else{
+		var cateName = window.prompt('请输入分类名称');
+		if(!cateName) {
+			return;
+		}
+		createCate(cateName);
+	}
+
 })
+
+// 创建一个分类，参数：分类名称
+function createCate(cateName, cateId){
+
+	var ul = currCate.getElementsByTagName('ul')[0];
+
+	var li = document.createElement('li'),
+	 	img = document.createElement('img'),
+	 	span = document.createElement('span');
+
+	var parentCateClass = trim(currCate.parentElement.className);
+
+	span.innerHTML = cateName;
+	li.appendChild(img);
+	li.appendChild(span);
+
+	if (parentCateClass == 'second-level'){
+
+		img.setAttribute('src', 'image/folder-open.png');
+		var childUl = document.createElement('ul');
+		addClass(childUl, 'third-level');
+		li.appendChild(childUl);
+		addClass(li, 'sec-item');
+		if(!cateId){	// 有cateId表示初始化时创建分类，没有cateId表示新建分类，需要存储
+			saveCate(cateName, 1);	// 对接存储接口
+		}	
+	}else if (parentCateClass == 'first-level'){
+		li.setAttribute('guid', cateId);		
+		img.setAttribute('src', 'image/file.png');
+		if(!cateId){
+			saveCate(cateName, 2)
+		}
+	}
+
+	ul.appendChild(li);
+	
+}
+
+// 往localStorage里添加分类
+function saveCate(cateName, level) {
+	if (level === 1) {
+		var hasSame = false;
+		each(cateData, function(item, index){
+			if(item.name == cateName){
+				hasSame = true;
+			}
+		})	
+		if(!hasSame){
+			cateData.push({
+				name: cateName,
+				childs: []
+			})
+			localStorage.cateData = JSON.stringify(cateData);
+		}	
+	}else{
+		var parentCate = currCate.getElementsByTagName('span');
+		if(parentCate.length){
+			parentCate = parentCate[0].innerHTML;
+			each(cateData, function(item){
+				if(item.name == parentCate){
+					var newCate = {
+						guid: guid(),
+						name: cateName
+					}
+					item.childs.push(newCate);
+				}
+			})
+			localStorage.cateData = JSON.stringify(cateData);
+		}	
+	}
+}
+
+// ----------------------------待办任务----------------------------
 
 // 初始化待办任务
 function initTodos(guid) {
@@ -222,6 +245,18 @@ function initTodos(guid) {
 	todoDiv.appendChild(outUl);
 
 }
+
+// 为待办任务的筛选条件添加点击事件
+addEvent(filter, 'click', function(){
+	var evt = arguments[0] || window.event,
+		target = evt.srcElement || evt.target;
+
+	var lis = filter.getElementsByTagName('li');
+	each(lis, function(item){
+		removeClass(item, 'selected');
+	})	
+	addClass(target, 'selected');
+})
 
 // 新建任务的点击事件
 addEvent(newTodo, 'click', function(){
@@ -325,21 +360,7 @@ function createContent(guid, name){
 	})
 }
 
-// 获取格式化的当天日期
-function getToday(){
-
-	var arr = [];
-	var today = new Date();
-	var month = today.getMonth() + 1;
-	month = month < 10 ? '0' + month : month;
-	var date = today.getDate();
-	date = date < 10 ? '0' + date : date;
-	arr.push(today.getFullYear());
-	arr.push(month);
-	arr.push(date);
-	return arr.join('-');
-
-}
+// ----------------------------任务详情----------------------------
 
 // 编辑按钮的点击事件
 addEvent(editBtn, 'click', function(){
@@ -361,3 +382,37 @@ addEvent(editBtn, 'click', function(){
 	}
 
 })
+
+// ----------------------------工具方法----------------------------
+
+// 获取格式化的当天日期
+function getToday(){
+
+	var arr = [];
+	var today = new Date();
+	var month = today.getMonth() + 1;
+	month = month < 10 ? '0' + month : month;
+	var date = today.getDate();
+	date = date < 10 ? '0' + date : date;
+	arr.push(today.getFullYear());
+	arr.push(month);
+	arr.push(date);
+	return arr.join('-');
+
+}
+
+// 生成guid
+function guid(){
+	var now = new Date();
+	var nowStr = now.getFullYear() + '' + 
+		(now.getMonth() + 1) + '' + 
+		now.getDate() + '' + 
+		now.getHours() + '' + 
+		now.getMinutes() + '' + 
+		now.getSeconds() + '' + 
+		now.getMilliseconds();
+	return nowStr;
+}
+
+
+
