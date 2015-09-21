@@ -61,6 +61,8 @@ var currCate,
 	initTodos('cate0001');
 	var curr = $('.second-level .third-level li');
 	addClass(curr, 'selected');
+	var icon = curr.getElementsByClassName('remove-icon')[0];
+	icon.style.display = 'block';
 
 	var li = $('.todos .second-level li');
 	addClass(li, 'selected');
@@ -77,6 +79,11 @@ addEvent(firLevel, 'click', function(){
 	var evt = arguments[0] || window.event,
 		target = evt.srcElement || evt.target,
 		cates = firLevel.getElementsByTagName('li');
+
+	var icons = document.getElementsByClassName('remove-icon');
+	each(icons, function(item){
+		item.style.display = 'none';
+	})
 
 	each(cates, function(item){		// 取消原先选中分类上的样式
 		removeClass(item, 'selected');
@@ -109,6 +116,8 @@ addEvent(firLevel, 'click', function(){
 	}
 
 	addClass(currCate, 'selected');		// 为当前选中的分类添加样式
+	var icon = currCate.getElementsByClassName('remove-icon')[0];
+	icon.style.display = 'block';
 
 })
 
@@ -157,8 +166,14 @@ function createCate(cateName, cateId){
 	var parentCateClass = trim(currCate.parentElement.className);
 
 	span.innerHTML = cateName;
+	li.style.position = 'relative';
 	li.appendChild(img);
 	li.appendChild(span);
+
+	var img2 = document.createElement('img');
+	img2.setAttribute('src', 'image/remove.png');
+	addClass(img2, 'remove-icon');
+	li.appendChild(img2);
 
 	if (cateId || parentCateClass == 'second-level'){
 		li.setAttribute('guid', cateId);		
