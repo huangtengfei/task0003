@@ -160,8 +160,13 @@ function createCate(cateName, cateId){
 	li.appendChild(img);
 	li.appendChild(span);
 
-	if (parentCateClass == 'first-level'){
-
+	if (cateId || parentCateClass == 'second-level'){
+		li.setAttribute('guid', cateId);		
+		img.setAttribute('src', 'image/file.png');
+		if(!cateId){
+			saveCate(cateName, 2);
+		}	
+	}else{
 		img.setAttribute('src', 'image/folder-open.png');
 		var childUl = document.createElement('ul');
 		addClass(childUl, 'third-level');
@@ -170,12 +175,6 @@ function createCate(cateName, cateId){
 		if(!cateId){	// 有cateId表示初始化时创建分类，没有cateId表示新建分类，需要存储
 			saveCate(cateName, 1);	// 对接存储接口
 		}	
-	}else if (parentCateClass == 'second-level'){
-		li.setAttribute('guid', cateId);		
-		img.setAttribute('src', 'image/file.png');
-		if(!cateId){
-			saveCate(cateName, 2);
-		}
 	}
 
 	ul.appendChild(li);
