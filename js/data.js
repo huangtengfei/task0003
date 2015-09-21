@@ -2,6 +2,7 @@
 
 var data = [
 	{
+		guid: 'top00001',
 		name: 'IFE项目',
 		childs: [
 			{
@@ -15,6 +16,7 @@ var data = [
 		]
 	},
 	{
+		guid: 'top00002',
 		name: '个人设计',
 		childs: [
 			{
@@ -24,6 +26,7 @@ var data = [
 		]
 	},
 	{
+		guid: 'top00003',
 		name: '默认分类',
 		childs: [
 			{

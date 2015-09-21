@@ -49,7 +49,7 @@ var currCate,
 
 	// 默认选中第一个小分类
 	initTodos('cate0001');
-	var curr = $('.third-level li');
+	var curr = $('.second-level .third-level li');
 	addClass(curr, 'selected');
 
 	var li = $('.todos .second-level li');
@@ -68,14 +68,13 @@ addEvent(firLevel, 'click', function(){
 		target = evt.srcElement || evt.target,
 		cates = firLevel.getElementsByTagName('li');
 
-	var parentCateClass = trim(currCate.parentElement.className);
-
 	each(cates, function(item){		// 取消原先选中分类上的样式
 		removeClass(item, 'selected');
 	})
 	newCate.style.cursor = 'pointer';	// 取消新增分类按钮上的禁止样式
 
 	currCate = target.tagName == 'LI' ? target : target.parentElement;
+	var parentCateClass = trim(currCate.parentElement.className);
 	var ul = currCate.getElementsByTagName('ul')[0];
 
 	if(target.tagName == 'IMG') {
@@ -151,7 +150,7 @@ function createCate(cateName, cateId){
 	li.appendChild(img);
 	li.appendChild(span);
 
-	if (parentCateClass == 'second-level'){
+	if (parentCateClass == 'first-level'){
 
 		img.setAttribute('src', 'image/folder-open.png');
 		var childUl = document.createElement('ul');
@@ -161,7 +160,7 @@ function createCate(cateName, cateId){
 		if(!cateId){	// 有cateId表示初始化时创建分类，没有cateId表示新建分类，需要存储
 			saveCate(cateName, 1);	// 对接存储接口
 		}	
-	}else if (parentCateClass == 'first-level'){
+	}else if (parentCateClass == 'second-level'){
 		li.setAttribute('guid', cateId);		
 		img.setAttribute('src', 'image/file.png');
 		if(!cateId){
