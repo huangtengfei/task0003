@@ -11,10 +11,17 @@ var newCate = $('#newCate'),
 	todoDiv = $('.todos'),
 	secRight = $('.sec-right'),
 	secRightEdit = $('.sec-right-edit');
+
+var todoTitle = $('.sec-right .title h4'),
+	todoDate = $('.sec-right .date span'),
+	todoContent = $('.sec-right .content p'),
+	eTodoTitle = $('.sec-right-edit .title input'),
+	eTodoDate = $('.sec-right-edit .date input'),
+	eTodoContent = $('.sec-right-edit .content textarea');
 	
 var currCate, 
-	currTodo, 
-	cateData = [];
+	currTodo,
+	cateData = data;
 
 // ----------------------------初始化----------------------------
 
@@ -24,9 +31,12 @@ var currCate,
 	// 从 localStorage 读取初始化数据
 	if(localStorage.cateData) {
 		cateData = JSON.parse(localStorage.cateData);
-	}else{
-		cateData = data;
-		localStorage.cateData = JSON.stringify(data);
+	}
+	if(localStorage.todoData) {
+		todoData = JSON.parse(localStorage.todoData);
+	}
+	if(localStorage.contentData) {
+		contentData = JSON.parse(localStorage.contentData);
 	}
 
 	// 初始化所有任务
@@ -164,7 +174,7 @@ function createCate(cateName, cateId){
 		li.setAttribute('guid', cateId);		
 		img.setAttribute('src', 'image/file.png');
 		if(!cateId){
-			saveCate(cateName, 2)
+			saveCate(cateName, 2);
 		}
 	}
 
@@ -299,14 +309,11 @@ function createTodo(innerUl, name, guid){
 		// TBD 生成guid
 		secRight.style.display = 'none';
 		secRightEdit.style.display = 'block';
-		var todoTitle = $('.sec-right-edit .title input'),
-			todoDate = $('.sec-right-edit .date input'),
-			todoContent = $('.sec-right-edit .content textarea');
 
-		todoTitle.value = name;
-		todoDate.value = getToday();
-		todoContent.value = '';
-		todoContent.focus();
+		eTodoTitle.value = name;
+		eTodoDate.value = getToday();
+		eTodoContent.value = '';
+		eTodoContent.focus();
 
 		updateSelected(innerLi);	// 将新创建的条目样式设置为选中
 	}
@@ -340,9 +347,6 @@ function getContent(){
 
 // 获取某一todo的内容并更新页面
 function createContent(guid, name){
-	var todoTitle = $('.sec-right .title h4'),
-		todoDate = $('.sec-right .date span'),
-		todoContent = $('.sec-right .content p');
 
 	each(contentData, function(item){
 		if(guid){
@@ -367,20 +371,39 @@ addEvent(editBtn, 'click', function(){
 	secRightEdit.style.display = 'block';
 
 	if(currTodo){
-		var todoTitle = $('.sec-right-edit .title input'),
-			todoDate = $('.sec-right-edit .date input'),
-			todoContent = $('.sec-right-edit .content textarea');
 
 		each(contentData, function(item){
 			if(item.guid == currTodo){
-				todoTitle.value = item.name;
-				todoDate.value = item.date;
-				todoContent.value = item.content;
+				eTodoTitle.value = item.name;
+				eTodoDate.value = item.date;
+				eTodoContent.value = item.content;
 			}
 		})
 	}
 
 })
+
+function submit(){
+	secRight.style.display = 'block';
+	secRightEdit.style.display = 'none';
+
+	todoTitle.innerHTML = eTodoTitle.value;
+	todoDate.innerHTML = eTodoDate.value;
+	todoContent.innerHTML = eTodoContent.value;
+
+	saveContent(currTodo, eTodoTitle.value, eTodoDate.value, eTodoContent.value);
+}
+
+function saveContent(guid, title, date, content){
+	each(contentData, function(item){
+		if(guid == item.guid){
+			item.name = title;
+			item.date = date;
+			item.content = content;
+		}
+	})
+	localStorage.contentData = JSON.stringify(contentData);
+}
 
 // ----------------------------工具方法----------------------------
 
