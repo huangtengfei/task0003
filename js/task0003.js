@@ -50,7 +50,7 @@ var currCate,
 	// 初始化分类列表
 	each(cateData, function(item1, index1){
 		currCate = firLevel.getElementsByClassName('fir-item')[1];
-		createCate(item1.name);
+		createCate(item1.name, item1.guid);
 		each(item1.childs, function(item2, index2){
 			currCate = secLevel.getElementsByClassName('sec-item')[index1];
 			createCate(item2.name, item2.guid);
@@ -94,7 +94,7 @@ addEvent(firLevel, 'click', function(){
 	var parentCateClass = trim(currCate.parentElement.className);
 	var ul = currCate.getElementsByTagName('ul')[0];
 
-	if(target.tagName == 'IMG') {
+	if(target.tagName == 'IMG' && trim(target.className) != 'remove-icon') {
 		if(parentCateClass != 'third-level'){
 			if(ul.style.display == 'none'){
 				ul.style.display = 'block';
@@ -172,11 +172,13 @@ function createCate(cateName, cateId){
 
 	var img2 = document.createElement('img');
 	img2.setAttribute('src', 'image/remove.png');
+	img2.setAttribute('onclick', 'removeCate()');
 	addClass(img2, 'remove-icon');
 	li.appendChild(img2);
+	li.setAttribute('guid', cateId);
 
-	if (cateId || parentCateClass == 'second-level'){
-		li.setAttribute('guid', cateId);		
+	if (parentCateClass == 'second-level'){
+				
 		img.setAttribute('src', 'image/file.png');
 		if(!cateId){
 			saveCate(cateName, 2);
@@ -228,6 +230,16 @@ function saveCate(cateName, level) {
 			localStorage.cateData = JSON.stringify(cateData);
 		}	
 	}
+}
+
+function removeCate(){
+	alert('remove');
+	var evt = arguments[0] || window.event,
+		target = evt.srcElement || evt.target;
+
+	var guid = target.parentElement.getAttribute('guid');
+	console.log(guid);
+	
 }
 
 // ----------------------------待办任务----------------------------

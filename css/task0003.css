@@ -98,7 +98,7 @@ header p {
 
 .categories .third-level > li {
 	text-indent: 4em;
-	line-height: 25px;
+	line-height: 30px;
 	font-size: 13px;
 }
 
@@ -118,9 +118,9 @@ header p {
 .categories .all-task .remove-icon {
 	position: absolute;
 	right: 30px;
-	top: 8px;
-	width: 9px;
-	height: 9px;
+	top: 11px;
+	width: 8px;
+	height: 8px;
 	display: none;
 }
 
