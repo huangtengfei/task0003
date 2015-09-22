@@ -163,6 +163,11 @@ function createCate(cateName, cateId){
 	 	img = document.createElement('img'),
 	 	span = document.createElement('span');
 
+	if(!cateId){
+		li.setAttribute('guid', newGuid);
+		var newGuid = guid();
+	}
+
 	var parentCateClass = trim(currCate.parentElement.className);
 
 	span.innerHTML = cateName;
@@ -181,7 +186,7 @@ function createCate(cateName, cateId){
 				
 		img.setAttribute('src', 'image/file.png');
 		if(!cateId){
-			saveCate(cateName, 2);
+			saveCate(cateName, newGuid, 2);
 		}	
 	}else{
 		img.setAttribute('src', 'image/folder-open.png');
@@ -190,7 +195,7 @@ function createCate(cateName, cateId){
 		li.appendChild(childUl);
 		addClass(li, 'sec-item');
 		if(!cateId){	// 有cateId表示初始化时创建分类，没有cateId表示新建分类，需要存储
-			saveCate(cateName, 1);	// 对接存储接口
+			saveCate(cateName, newGuid, 1);	// 对接存储接口
 		}	
 	}
 
@@ -199,7 +204,7 @@ function createCate(cateName, cateId){
 }
 
 // 往localStorage里添加分类
-function saveCate(cateName, level) {
+function saveCate(cateName, guid, level) {
 	if (level === 1) {
 		var hasSame = false;
 		each(cateData, function(item, index){
@@ -209,6 +214,7 @@ function saveCate(cateName, level) {
 		})	
 		if(!hasSame){
 			cateData.push({
+				guid: guid,
 				name: cateName,
 				childs: []
 			})
@@ -221,7 +227,7 @@ function saveCate(cateName, level) {
 			each(cateData, function(item){
 				if(item.name == parentCate){
 					var newCate = {
-						guid: guid(),
+						guid: guid,
 						name: cateName
 					}
 					item.childs.push(newCate);
@@ -233,13 +239,29 @@ function saveCate(cateName, level) {
 }
 
 function removeCate(){
-	alert('remove');
-	var evt = arguments[0] || window.event,
-		target = evt.srcElement || evt.target;
+	var submitted = confirm('确定要删除吗？');
+	if(submitted){
+		cateData = JSON.parse(localStorage.cateData);
+		var evt = arguments[0] || window.event,
+			target = evt.srcElement || evt.target;
 
-	var guid = target.parentElement.getAttribute('guid');
-	console.log(guid);
-	
+		var guid = target.parentElement.getAttribute('guid');
+		console.log(guid);
+		each(cateData, function(item1, index1){
+			if (item1.guid == guid) {
+				cateData.splice(index1, 1);
+				return;
+			}else{
+				each(cateData[index1].childs, function(item2, index2){
+					if(item2.guid == guid){
+						cateData[index1].childs.splice(index2, 1);
+						return;
+					}
+				})
+			}
+		})
+		localStorage.cateData = JSON.stringify(cateData);
+	}
 }
 
 // ----------------------------待办任务----------------------------
