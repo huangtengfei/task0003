@@ -175,8 +175,10 @@ function createCate(cateName, cateId){
 	 	span = document.createElement('span');
 
 	if(!cateId){
-		li.setAttribute('guid', newGuid);
 		var newGuid = guid();
+		li.setAttribute('guid', newGuid);	
+	}else{
+		li.setAttribute('guid', cateId);
 	}
 
 	var parentCateClass = trim(currCate.parentElement.className);
@@ -191,7 +193,7 @@ function createCate(cateName, cateId){
 	img2.setAttribute('onclick', 'removeCate()');
 	addClass(img2, 'remove-icon');
 	li.appendChild(img2);
-	li.setAttribute('guid', cateId);
+	
 
 	if (parentCateClass == 'second-level'){
 				
@@ -279,6 +281,7 @@ function removeCate(){
 			}
 		})
 		localStorage.cateData = JSON.stringify(cateData);
+		location.reload();
 	}
 }
 
@@ -417,6 +420,7 @@ function createTodo(innerUl, name, todoId, finished){
 		eTodoDate.value = today;
 		eTodoContent.value = '';
 		eTodoContent.focus();
+		currTodo = todoId;
 
 		updateSelected(innerLi);	// 将新创建的条目样式设置为选中
 	}
