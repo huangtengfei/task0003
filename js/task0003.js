@@ -31,6 +31,8 @@ var currCate,
 	// 从 localStorage 读取初始化数据
 	if(localStorage.cateData) {
 		cateData = JSON.parse(localStorage.cateData);
+	}else{
+		localStorage.cateData = JSON.stringify(cateData);
 	}
 
 	if(localStorage.todoData) {
@@ -41,6 +43,8 @@ var currCate,
 
 	if(localStorage.contentData) {
 		contentData = JSON.parse(localStorage.contentData);
+	}else{
+		localStorage.contentData = JSON.stringify(contentData);
 	}
 
 	// 初始化所有任务
@@ -62,7 +66,7 @@ var currCate,
 	})
 
 	// 默认选中第一个小分类
-	initTodos('cate0001');
+	initTodos('cate0001', 0);
 	currCate = $('.second-level .third-level li');
 	addClass(currCate, 'selected');
 	var icon = currCate.getElementsByClassName('remove-icon')[0];
@@ -112,7 +116,7 @@ addEvent(firLevel, 'click', function(){
 
 	if(parentCateClass == 'third-level' || parentCateClass == 'all-task'){
 		newCate.style.cursor = 'not-allowed';
-		initTodos(currCate.getAttribute('guid'));
+		initTodos(currCate.getAttribute('guid'), 0);
 	}else{
 		if(ul){
 			ul.style.background = '#f2f2f2';
@@ -212,6 +216,8 @@ function createCate(cateName, cateId){
 
 // 往localStorage里添加分类
 function saveCate(cateName, guid, level) {
+	cateData = JSON.parse(localStorage.cateData);
+	todoData = JSON.parse(localStorage.todoData);
 	if (level === 1) {
 		var hasSame = false;
 		each(cateData, function(item, index){
@@ -241,6 +247,11 @@ function saveCate(cateName, guid, level) {
 				}
 			})
 			localStorage.cateData = JSON.stringify(cateData);
+			todoData.push({
+				guid: guid,
+				data: []
+			})
+			localStorage.todoData = JSON.stringify(todoData);
 		}	
 	}
 }
@@ -273,8 +284,23 @@ function removeCate(){
 
 // ----------------------------待办任务----------------------------
 
+// 查看所有任务
+function selectAll(){
+	initTodos(currCate.getAttribute('guid'), 0);
+}
+
+// 查看未完成任务
+function selectUnfinished(){
+	initTodos(currCate.getAttribute('guid'), 1);
+}
+
+// 查看已完成任务
+function selectFinished(){
+	initTodos(currCate.getAttribute('guid'), 2);
+}
+
 // 初始化待办任务
-function initTodos(guid) {
+function initTodos(guid, type) {
 	var datas = [];
 	var ul = $('.todos .first-level');
 	todoDiv.removeChild(ul);
@@ -290,19 +316,30 @@ function initTodos(guid) {
 
 	each(datas, function(item1){
 
+		var lisOfUl = 0;
 		var outerLi = document.createElement('li');
 		var span = document.createElement('span');
 		span.innerHTML = item1.date;
 
 		var innerUl = document.createElement('ul');
 		addClass(innerUl, 'second-level');
+
 		each(item1.todos, function(item2){
-			createTodo(innerUl, item2.name, item2.guid, item2.finished);
+			var cond1 = ((type == 1) && !item2.finished),
+				cond2 = ((type == 2) && item2.finished),
+				cond3 = (type == 0);
+
+			if(cond1 || cond2 || cond3){
+				createTodo(innerUl, item2.name, item2.guid, item2.finished);
+				lisOfUl++;
+			}
 		})
 
-		outerLi.appendChild(span);
-		outerLi.appendChild(innerUl);
-		outUl.appendChild(outerLi);
+		if(lisOfUl > 0){
+			outerLi.appendChild(span);
+			outerLi.appendChild(innerUl);
+			outUl.appendChild(outerLi);
+		}
 
 	})
 
@@ -333,9 +370,6 @@ addEvent(newTodo, 'click', function(){
 		return;
 	}
 
-	var firstLi = $('.todos li');
-	var firstTodo = $('.todos span').innerHTML;
-
 	var currUl,
 		hasDate = false;
 
@@ -359,7 +393,7 @@ addEvent(newTodo, 'click', function(){
 		addClass(innerUl, 'second-level');
 		li.appendChild(span);
 		li.appendChild(innerUl);
-		outUl.insertBefore(li, firstLi);
+		outUl.appendChild(li);
 		createTodo(innerUl, todoName);
 	}
 	
@@ -436,6 +470,7 @@ function createContent(guid, name){
 	})
 }
 
+// 保存一个任务到localStorage
 function saveTodo(cateId, todoId, date, name, finished){
 	todoData = JSON.parse(localStorage.todoData);
 	var todo = {
@@ -451,7 +486,7 @@ function saveTodo(cateId, todoId, date, name, finished){
 					item.data[i].todos.push(todo);
 				}
 			};
-			if(!hasDate){
+			if(!hasDate || !item.data.length){
 				var tmpTodos = [];
 				tmpTodos.push(todo);
 				item.data.push({
@@ -485,6 +520,7 @@ addEvent(editBtn, 'click', function(){
 
 })
 
+// 完成任务事件
 addEvent(checkBtn, 'click', function(){
 	var cateId = currCate.getAttribute('guid');
 	each(todoData, function(item1){
@@ -513,6 +549,7 @@ addEvent(checkBtn, 'click', function(){
 	
 })
 
+// 右侧内容区域失去光标，触发提交事件
 function submit(){
 	secRight.style.display = 'block';
 	secRightEdit.style.display = 'none';
@@ -524,7 +561,9 @@ function submit(){
 	saveContent(currTodo, eTodoTitle.value, eTodoDate.value, eTodoContent.value);
 }
 
+// 保存任务内容
 function saveContent(guid, title, date, content, finished){
+	contentData = JSON.parse(localStorage.contentData);
 	var hasTodo = false;
 	each(contentData, function(item){
 		if(guid == item.guid){

@@ -30,9 +30,9 @@
 		</section>
 		<section class="sec-middle">
 			<ul class="filter">
-				<li class="selected">所有</li>
-				<li>未完成</li>
-				<li>已完成</li>
+				<li class="selected" onclick="selectAll()">所有</li>
+				<li id="unfinished" onclick="selectUnfinished()">未完成</li>
+				<li id="finished" onclick="selectFinished()">已完成</li>
 			</ul>
 			<div class="todos">
 				<ul class="first-level">
