@@ -32,9 +32,13 @@ var currCate,
 	if(localStorage.cateData) {
 		cateData = JSON.parse(localStorage.cateData);
 	}
+
 	if(localStorage.todoData) {
 		todoData = JSON.parse(localStorage.todoData);
+	}else{
+		localStorage.todoData = JSON.stringify(todoData);
 	}
+
 	if(localStorage.contentData) {
 		contentData = JSON.parse(localStorage.contentData);
 	}
@@ -59,9 +63,9 @@ var currCate,
 
 	// 默认选中第一个小分类
 	initTodos('cate0001');
-	var curr = $('.second-level .third-level li');
-	addClass(curr, 'selected');
-	var icon = curr.getElementsByClassName('remove-icon')[0];
+	currCate = $('.second-level .third-level li');
+	addClass(currCate, 'selected');
+	var icon = currCate.getElementsByClassName('remove-icon')[0];
 	icon.style.display = 'block';
 
 	var li = $('.todos .second-level li');
@@ -114,10 +118,13 @@ addEvent(firLevel, 'click', function(){
 			ul.style.background = '#f2f2f2';
 		}		
 	}
+	
+	if(trim(currCate.className) != 'fir-item'){
+		var icon = currCate.getElementsByClassName('remove-icon')[0];
+		icon.style.display = 'block';
+	}
 
 	addClass(currCate, 'selected');		// 为当前选中的分类添加样式
-	var icon = currCate.getElementsByClassName('remove-icon')[0];
-	icon.style.display = 'block';
 
 })
 
@@ -239,7 +246,7 @@ function saveCate(cateName, guid, level) {
 }
 
 function removeCate(){
-	var submitted = confirm('确定要删除吗？');
+	var submitted = confirm('确定要删除该分类吗？');
 	if(submitted){
 		cateData = JSON.parse(localStorage.cateData);
 		var evt = arguments[0] || window.event,
@@ -329,9 +336,20 @@ addEvent(newTodo, 'click', function(){
 	var firstLi = $('.todos li');
 	var firstTodo = $('.todos span').innerHTML;
 
-	if(firstTodo == getToday()){
-		var ul = $('.todos .second-level');
-		createTodo(ul, todoName);
+	var currUl,
+		hasDate = false;
+
+	var dateSpans = $('.todos').getElementsByTagName('span');
+	each(dateSpans, function(item){
+		if(item.innerHTML == getToday()){
+			hasDate = true;
+			currUl = item.parentElement.getElementsByClassName('second-level')[0];
+		}
+	})
+
+	if(hasDate){
+		console.log(currUl);
+		createTodo(currUl, todoName);
 	}else{
 		var outUl = $('.todos .first-level');
 		var li = document.createElement('li');
@@ -348,23 +366,27 @@ addEvent(newTodo, 'click', function(){
 })
 
 // 创建一条todo
-function createTodo(innerUl, name, guid){
+function createTodo(innerUl, name, todoId){
 	var innerLi = document.createElement('li');
 	innerLi.innerHTML = name;
-	if(guid){
-		innerLi.setAttribute('guid', guid);
-	}else{
-		// TBD 生成guid
+	if(!todoId){
+		
+		var todoId = guid();// 生成guid
+		var cateId = currCate.getAttribute('guid');
+		var today = getToday();
+		saveTodo(cateId, todoId, today, name);
+
 		secRight.style.display = 'none';
 		secRightEdit.style.display = 'block';
 
 		eTodoTitle.value = name;
-		eTodoDate.value = getToday();
+		eTodoDate.value = today;
 		eTodoContent.value = '';
 		eTodoContent.focus();
 
 		updateSelected(innerLi);	// 将新创建的条目样式设置为选中
 	}
+	innerLi.setAttribute('guid', todoId);
 	innerLi.setAttribute('onclick', 'getContent()');
 	innerUl.appendChild(innerLi);
 }
@@ -411,6 +433,35 @@ function createContent(guid, name){
 	})
 }
 
+function saveTodo(cateId, todoId, date, name){
+	todoData = JSON.parse(localStorage.todoData);
+	var todo = {
+		guid: todoId,
+		name: name
+	};
+	each(todoData, function(item){
+		if(item.guid == cateId){
+			var hasDate = false;
+			for (var i = 0; i < item.data.length; i++) {
+				if(item.data[i].date == date){
+					hasDate = true;
+					item.data[i].todos.push(todo);
+				}
+			};
+			if(!hasDate){
+				var tmpTodos = [];
+				tmpTodos.push(todo);
+				item.data.push({
+					date: date,
+					todos: tmpTodos
+				})
+			}
+		}
+	})
+	localStorage.todoData = JSON.stringify(todoData);
+	saveContent(todoId, name, date, '');
+}
+
 // ----------------------------任务详情----------------------------
 
 // 编辑按钮的点击事件
@@ -443,13 +494,23 @@ function submit(){
 }
 
 function saveContent(guid, title, date, content){
+	var hasTodo = false;
 	each(contentData, function(item){
 		if(guid == item.guid){
+			hasTodo = true;
 			item.name = title;
 			item.date = date;
 			item.content = content;
 		}
 	})
+	if(!hasTodo){
+		contentData.push({
+			guid: guid,
+			name: title,
+			date: date,
+			content: content
+		})
+	}
 	localStorage.contentData = JSON.stringify(contentData);
 }
 
