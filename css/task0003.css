@@ -201,6 +201,10 @@ header p {
 	background: #f2f2f2;
 }
 
+.finished-todo {
+	color: green;
+}
+
 .sec-right, 
 .sec-right-edit {
 	float: left;

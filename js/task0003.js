@@ -297,7 +297,7 @@ function initTodos(guid) {
 		var innerUl = document.createElement('ul');
 		addClass(innerUl, 'second-level');
 		each(item1.todos, function(item2){
-			createTodo(innerUl, item2.name, item2.guid);
+			createTodo(innerUl, item2.name, item2.guid, item2.finished);
 		})
 
 		outerLi.appendChild(span);
@@ -366,7 +366,7 @@ addEvent(newTodo, 'click', function(){
 })
 
 // 创建一条todo
-function createTodo(innerUl, name, todoId){
+function createTodo(innerUl, name, todoId, finished){
 	var innerLi = document.createElement('li');
 	innerLi.innerHTML = name;
 	if(!todoId){
@@ -388,6 +388,9 @@ function createTodo(innerUl, name, todoId){
 	}
 	innerLi.setAttribute('guid', todoId);
 	innerLi.setAttribute('onclick', 'getContent()');
+	if (finished) {
+		addClass(innerLi, 'finished-todo');
+	};
 	innerUl.appendChild(innerLi);
 }
 
@@ -433,7 +436,7 @@ function createContent(guid, name){
 	})
 }
 
-function saveTodo(cateId, todoId, date, name){
+function saveTodo(cateId, todoId, date, name, finished){
 	todoData = JSON.parse(localStorage.todoData);
 	var todo = {
 		guid: todoId,
@@ -482,6 +485,34 @@ addEvent(editBtn, 'click', function(){
 
 })
 
+addEvent(checkBtn, 'click', function(){
+	var cateId = currCate.getAttribute('guid');
+	each(todoData, function(item1){
+		if (item1.guid == cateId) {
+			each(item1.data, function(item2){
+				each(item2.todos, function(item3){
+					if (item3.guid == currTodo) {
+						item3.finished = true;
+					};
+				})
+			})
+		};
+	})
+
+	localStorage.todoData = JSON.stringify(todoData);
+
+	var secLevel = $('.todos').getElementsByClassName('second-level');
+	each(secLevel, function(item){
+		var lis = item.getElementsByTagName('li');
+		each(lis, function(li){
+			if(li.getAttribute('guid') == currTodo){
+				addClass(li, 'finished-todo');
+			}
+		})
+	})
+	
+})
+
 function submit(){
 	secRight.style.display = 'block';
 	secRightEdit.style.display = 'none';
@@ -493,7 +524,7 @@ function submit(){
 	saveContent(currTodo, eTodoTitle.value, eTodoDate.value, eTodoContent.value);
 }
 
-function saveContent(guid, title, date, content){
+function saveContent(guid, title, date, content, finished){
 	var hasTodo = false;
 	each(contentData, function(item){
 		if(guid == item.guid){
@@ -501,6 +532,7 @@ function saveContent(guid, title, date, content){
 			item.name = title;
 			item.date = date;
 			item.content = content;
+			item.finished = finished;
 		}
 	})
 	if(!hasTodo){
@@ -508,11 +540,13 @@ function saveContent(guid, title, date, content){
 			guid: guid,
 			name: title,
 			date: date,
-			content: content
+			content: content,
+			finished: finished
 		})
 	}
 	localStorage.contentData = JSON.stringify(contentData);
 }
+
 
 // ----------------------------工具方法----------------------------
 

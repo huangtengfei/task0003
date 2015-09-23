@@ -50,11 +50,13 @@ var todoData = [
 				todos: [
 					{
 						guid: 'todo0001',
-						name: 'to-do-3'
+						name: 'to-do-3',
+						finished: true
 					},
 					{
 						guid: 'todo0002',
-						name: 'to-do-4'
+						name: 'to-do-4',
+						finished: false
 					}
 				]
 			},
@@ -63,11 +65,13 @@ var todoData = [
 				todos: [
 					{
 						guid: 'todo0003',
-						name: 'to-do-1'
+						name: 'to-do-1',
+						finished: false
 					},
 					{
 						guid: 'todo0004',
-						name: 'to-do-2'
+						name: 'to-do-2',
+						finished: true
 					}
 				]
 			}
@@ -81,11 +85,13 @@ var todoData = [
 				todos: [
 					{
 						guid: 'todo0005',
-						name: 'to-do-1'
+						name: 'to-do-1',
+						finished: false
 					},
 					{
 						guid: 'todo0006',
-						name: 'to-do-2'
+						name: 'to-do-2',
+						finished: false
 					}
 				]
 			}
@@ -99,11 +105,13 @@ var todoData = [
 				todos: [
 					{
 						guid: 'todo0007',
-						name: 'to-do-1'
+						name: 'to-do-1',
+						finished: true
 					},
 					{
 						guid: 'todo0008',
-						name: 'to-do-2'
+						name: 'to-do-2',
+						finished: false
 					}
 				]
 			}
@@ -117,11 +125,13 @@ var todoData = [
 				todos: [
 					{
 						guid: 'todo0009',
-						name: 'to-do-3'
+						name: 'to-do-3',
+						finished: true
 					},
 					{
 						guid: 'todo0010',
-						name: 'to-do-4'
+						name: 'to-do-4',
+						finished: false
 					}
 				]
 			},
@@ -130,11 +140,13 @@ var todoData = [
 				todos: [
 					{
 						guid: 'todo0011',
-						name: 'to-do-1'
+						name: 'to-do-1',
+						finished: true
 					},
 					{
 						guid: 'todo0012',
-						name: 'to-do-2'
+						name: 'to-do-2',
+						finished: true
 					}
 				]
 			}
@@ -148,11 +160,13 @@ var todoData = [
 				todos: [
 					{
 						guid: 'todo0013',
-						name: 'to-do-1'
+						name: 'to-do-1',
+						finished: true
 					},
 					{
 						guid: 'todo0014',
-						name: 'to-do-2'
+						name: 'to-do-2',
+						finished: false
 					}
 				]
 			}
